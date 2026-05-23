@@ -21,6 +21,8 @@ int main()
         EndDrawing();
     }
 
+    delete Main;
+
     ENGINE::shutdown();
     CloseWindow();
     return 0;
