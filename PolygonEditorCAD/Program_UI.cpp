@@ -14,14 +14,6 @@ Program::~Program() {
         delete child;
     }
 }
-void Program::setupButtons() {
-    // Checkbox
-    checkBoxShowPoint = new CheckBox("Show Coordinates", true);
-    checkBoxShowPoint->position = { windowWidth - 300.0f, windowHeight - 60.0f };
-    addChild(checkBoxShowPoint);
-    checkBoxShowPoint->connect_toggled([this](bool v) {
-        ENGINE::SHOW_POINT_COORDINATES = v;
-        });
 
 void Program::drawGrid() {
     Camera2D* rlCam = camera->getRaylibCamera();
