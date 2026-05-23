@@ -4,6 +4,7 @@ Program::Program() {
     camera = new CameraNode();
     addChild(camera);
 
+    // Crucial: Call this here so buttons are actually built at startup!
     setupButtons();
 }
 Program::~Program() {
@@ -13,6 +14,14 @@ Program::~Program() {
         delete child;
     }
 }
+void Program::setupButtons() {
+    // Checkbox
+    checkBoxShowPoint = new CheckBox("Show Coordinates", true);
+    checkBoxShowPoint->position = { windowWidth - 300.0f, windowHeight - 60.0f };
+    addChild(checkBoxShowPoint);
+    checkBoxShowPoint->connect_toggled([this](bool v) {
+        ENGINE::SHOW_POINT_COORDINATES = v;
+        });
 
 void Program::drawGrid() {
     Camera2D* rlCam = camera->getRaylibCamera();
@@ -57,15 +66,15 @@ void Program::drawGrid() {
         if (worldIndex == 0) {
             lineColor = GRID_AXIS;
             thickness = GRID_THICKNESS_AXIS;
-        }
+    }
         else if (worldIndex % GRID_MAJOR_INTERVAL == 0) {
             lineColor = GRID_COLOR_MAJOR;
             thickness = GRID_THICKNESS_MAJOR;
-        }
+    }
         else {
             lineColor = GRID_COLOR;
             thickness = GRID_THICKNESS_MINOR;
-        }
+}
 
         DrawLineEx({ worldCenter.x - ext, y },
             { worldCenter.x + ext, y }, thickness, lineColor);
