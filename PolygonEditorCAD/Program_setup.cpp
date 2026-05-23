@@ -42,7 +42,7 @@ void Program::setupButtons() {
 
     // Checkboxes (Aligned to Col 0, sitting virtually on "Row 3")
     checkBoxShowPoint = makeBox("Show Coordinates", true, 0, 3);
-
+    checkBoxShowLength = makeBox("Show Edge Lengths", true, 0, 4);
     // EVENT BINDINGS
     setupButtonEvents();
 
@@ -85,8 +85,12 @@ void Program::setActiveShape(Shape* next) {
 }
 void Program::setupButtonEvents() {
 
-    checkBoxShowPoint->connect_toggled([this](bool v) {
-        ENGINE::SHOW_POINT_COORDINATES = v;
+    checkBoxShowLength->connect_toggled([this](bool state) {
+        ENGINE::SHOW_LINE_LENGTH = state;
+        });
+
+    checkBoxShowPoint->connect_toggled([this](bool state) {
+        ENGINE::SHOW_POINT_COORDINATES = state;
         });
     // Modify State Tools
     btnDeselect->connect_pressed([this]() {

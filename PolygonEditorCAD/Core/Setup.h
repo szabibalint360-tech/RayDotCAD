@@ -27,10 +27,10 @@ namespace ENGINE {//global variables no linker error
     inline bool BUILD_DEBUG_TOOLS = true;
     inline bool SHOW_POINT_COORDINATES = true;
     inline bool SHOW_LINE_LENGHT = true;
-    // Initialize to 0 so Raylib doesn't throw a fit before loading
+    inline bool SHOW_LINE_LENGTH = true;
+
     inline Font MAIN_FONT = { 0 };
 
-    // Functions inside headers should also be inline
     inline void initialize() {
         MAIN_FONT = LoadFontEx("Assets/InterVariable.ttf", 64, 0, 0);
 
@@ -64,7 +64,7 @@ namespace {
 }
 
 //Global Functions
-
+// NOT USED FOR ANYTHING
 // Returns 0.0f to 1.0f
 inline float randf() {
     return uniform_real_distribution<float>(0.0f, 1.0f)(_gen);

@@ -1,7 +1,9 @@
 #pragma once
 
 #include "../Node.h"
-
+//Left here to not forget where we started
+//Demonstrates very well why it is recommended to define methods outside header and in multiple files
+//scalability is everything
 constexpr int POINT_SIZE = 10;
 
 class Point {
@@ -97,16 +99,11 @@ public:
     Vector2 GetMouseWorldPos() {
         return GetScreenToWorld2D(GetMousePosition(), *viewingCamera);
     }
-    // Returns the signed 2D cross product of vectors AB and BC.
-    // In Raylib screen space (Y-down), a NEGATIVE value means the
-    // vertex B is a convex (left-turning) ear candidate.
     float cross2D(Vector2 a, Vector2 b, Vector2 c) {
         return (b.x - a.x) * (c.y - b.y) - (b.y - a.y) * (c.x - b.x);
     }
 
     bool IsPointInTriangle(Vector2 p, Vector2 a, Vector2 b, Vector2 c) {
-        // Uses cross products — works regardless of winding because we
-        // check all three edges return the same sign for interior points.
         float d1 = (p.x - b.x) * (a.y - b.y) - (a.x - b.x) * (p.y - b.y);
         float d2 = (p.x - c.x) * (b.y - c.y) - (b.x - c.x) * (p.y - c.y);
         float d3 = (p.x - a.x) * (c.y - a.y) - (c.x - a.x) * (p.y - a.y);
@@ -124,20 +121,13 @@ public:
         for (const auto& pt : points) {
             vertices.push_back(pt.getPos());
         }
-
-        // 1. Calculate the Signed Area to find the true winding direction
         float signedArea = 0.0f;
         for (size_t i = 0; i < vertices.size(); i++) {
             size_t j = (i + 1) % vertices.size();
             signedArea += (vertices[i].x * vertices[j].y) - (vertices[j].x * vertices[i].y);
         }
-
-        // In Raylib's Y-down coordinate system:
-        // Positive Area = Clockwise (CW) 
-        // Negative Area = Counter-Clockwise (CCW)
         bool isClockwise = (signedArea > 0.0f);
 
-        // 2. Ear clipping loop
         while (vertices.size() >= 3) {
             bool earFound = false;
 
@@ -146,16 +136,14 @@ public:
                 size_t nextIdx = (i + 1) % vertices.size();
 
                 Vector2 a = vertices[prevIdx];
-                Vector2 b = vertices[i];     // The potential ear tip
+                Vector2 b = vertices[i];    
                 Vector2 c = vertices[nextIdx];
 
-                // 3. Dynamic Convexity Check based on the overall shape's winding
                 float crossProduct = (b.x - a.x) * (c.y - b.y) - (b.y - a.y) * (c.x - b.x);
                 bool isConvex = isClockwise ? (crossProduct >= 0.0f) : (crossProduct <= 0.0f);
 
-                if (!isConvex) continue; // Skip concave vertices (dents)
+                if (!isConvex) continue;
 
-                // 4. Confirm no other vertex is inside this ear triangle
                 bool isAnEar = true;
                 for (size_t j = 0; j < vertices.size(); j++) {
                     if (j == prevIdx || j == i || j == nextIdx) continue;
@@ -166,10 +154,7 @@ public:
                     }
                 }
 
-                // 5. Clip the ear and draw!
                 if (isAnEar) {
-                    // Raylib's DrawTriangle REQUIRES Counter-Clockwise order to render properly.
-                    // If our polygon is CW, we pass the vertices backwards (c, b, a) to satisfy the GPU.
                     if (isClockwise) {
                         DrawTriangle(c, b, a, fillColor);
                     }
@@ -177,18 +162,16 @@ public:
                         DrawTriangle(a, b, c, fillColor);
                     }
 
-                    vertices.erase(vertices.begin() + i); // Slice the ear off
+                    vertices.erase(vertices.begin() + i);
                     earFound = true;
                     break;
                 }
             }
 
-            // Failsafe: Break if we enter an infinite loop due to self-intersecting lines
             if (!earFound) break;
         }
     }
 
-    // Sum of edge lengths around the closed polygon.
     float calculatePerimeter() const {
         if (points.size() < 2) return 0.0f;
         float perimeter = 0.0f;
@@ -202,8 +185,6 @@ public:
         return perimeter;
     }
 
-    // Shoelace formula — works for any simple (non-self-intersecting) polygon.
-    // Returns the absolute area in square pixels.
     float calculateArea() const {
         if (points.size() < 3) return 0.0f;
         float sum = 0.0f;
@@ -228,9 +209,9 @@ public:
             points[i].draw();
         }
     }
-    // Returns true if line segment AB intersects line segment CD
+
     bool DoLinesIntersect(Vector2 a, Vector2 b, Vector2 c, Vector2 d) {
-        // Standard Line-Intersection math using cross-products
+        
         auto ccw = [](Vector2 p1, Vector2 p2, Vector2 p3) {
             return (p3.y - p1.y) * (p2.x - p1.x) > (p2.y - p1.y) * (p3.x - p1.x);
             };
@@ -240,24 +221,22 @@ public:
         return checkSelfIntersection();
     }
     bool checkSelfIntersection() {
-        if (points.size() < 4) return false; // Triangles can't self-intersect
+        if (points.size() < 4) return false; 
 
         size_t numPoints = points.size();
 
-        // Compare every line segment against every other line segment
         for (size_t i = 0; i < numPoints; i++) {
             Vector2 a1 = points[i].getPos();
-            Vector2 a2 = points[(i + 1) % numPoints].getPos(); // Line 1
+            Vector2 a2 = points[(i + 1) % numPoints].getPos(); 
 
             for (size_t j = i + 2; j < numPoints; j++) {
-                // Avoid checking adjacent lines (they share a vertex, so they naturally touch)
                 if ((j + 1) % numPoints == i) continue;
 
                 Vector2 b1 = points[j].getPos();
-                Vector2 b2 = points[(j + 1) % numPoints].getPos(); // Line 2
+                Vector2 b2 = points[(j + 1) % numPoints].getPos();
 
                 if (DoLinesIntersect(a1, a2, b1, b2)) {
-                    return true; // Boom, intersection found!
+                    return true;
                 }
             }
         }
@@ -290,6 +269,7 @@ public:
             DrawUIText(coordText.c_str(), textX, textY, fontSize, DARKGRAY);
         }
     }
+    //drawing the UI used to be a mess
     void drawUIProperties() {
         drawTextLabels();
         // 1. DYNAMIC SIDEBAR LAYOUT SELECTION (No Hardcoding)

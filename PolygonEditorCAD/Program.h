@@ -18,6 +18,7 @@ private:
     Shape* activeShape = nullptr;
 
     // UI
+    CheckBox* checkBoxShowLength = nullptr;
     CheckBox* checkBoxShowPoint = nullptr;
     Button* btnDeselect = nullptr;
     Button* btnDelete = nullptr;
@@ -37,4 +38,5 @@ public:
     void drawGrid();
     void draw() override;
     void drawUI() override;
+    void drawPanel();
 };

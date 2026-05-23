@@ -31,9 +31,6 @@ void Shape::drawUIProperties() {
     float sidebarWidth = windowWidth * 0.25f;
     float sidebarX = windowWidth - sidebarWidth;
 
-    DrawRectangle((int)sidebarX, 0, (int)sidebarWidth, windowHeight, Fade(DARKGRAY, 0.9f));
-    DrawLineEx({ sidebarX, 0 }, { sidebarX, (float)windowHeight }, 2.0f, MAROON);
-
     float paddingX = sidebarX + 25.0f;
     float currentY = 30.0f;
     int titleFontSize = 24;
@@ -59,16 +56,16 @@ void Shape::drawUIProperties() {
 
     char buffer[128];
 
-    snprintf(buffer, sizeof(buffer), "Perimeter: %.2f px", totalPerimeter);
+    snprintf(buffer, sizeof(buffer), "Perimeter: %.2f mm", totalPerimeter);
     DrawUIText(buffer, (int)paddingX, (int)currentY, bodyFontSize, LIGHTGRAY);
     currentY += 30.0f;
 
     if (isIntersecting) {
-        snprintf(buffer, sizeof(buffer), "Area: -- (Invalid Topology)");
+        snprintf(buffer, sizeof(buffer), "Area: (Invalid Topology)");
         DrawUIText(buffer, (int)paddingX, (int)currentY, bodyFontSize, ORANGE);
     }
     else {
-        snprintf(buffer, sizeof(buffer), "Area: %.2f px²", totalArea);
+        snprintf(buffer, sizeof(buffer), "Area: %.2f mm^2", totalArea);
         DrawUIText(buffer, (int)paddingX, (int)currentY, bodyFontSize, LIGHTGRAY);
     }
     currentY += 35.0f;

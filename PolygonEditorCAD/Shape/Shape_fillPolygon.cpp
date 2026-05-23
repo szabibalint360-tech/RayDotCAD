@@ -40,7 +40,7 @@ void Shape::fillPolygon() {
     }
     bool isClockwise = (signedArea > 0.0f);
 
-    // cross2D defined once outside the loop
+    //lambda helper
     auto cross2D = [](Vector2 a, Vector2 b, Vector2 c) -> float {
         return (b.x - a.x) * (c.y - b.y) - (b.y - a.y) * (c.x - b.x);
         };

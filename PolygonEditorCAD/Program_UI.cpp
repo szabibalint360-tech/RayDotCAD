@@ -73,6 +73,31 @@ void Program::drawGrid() {
     }
 }
 
+void Program::drawPanel() {
+    int windowWidth = GetScreenWidth();
+    int windowHeight = GetScreenHeight();
+
+    float sidebarWidth = windowWidth * 0.25f;
+    float sidebarX = windowWidth - sidebarWidth;
+
+    DrawRectangle((int)sidebarX, 0, (int)sidebarWidth, windowHeight, Fade(DARKGRAY, 0.9f));
+    DrawLineEx({ sidebarX, 0 }, { sidebarX, (float)windowHeight }, 2.0f, MAROON);
+}
+
+void Program::drawUI() {
+
+    drawPanel();
+
+    if (activeShape == nullptr) {
+        //DrawUIText("Select a shape tool to begin.", windowWidth * 0.35f, windowHeight * 0.5f, 20, GRAY); 
+    }
+    else {
+        activeShape->drawUIProperties();
+    }
+
+    Scene::drawUI();//UI buttons
+}
+
 void Program::draw(){
     if (camera) camera->beginDraw();
     drawGrid();
@@ -81,13 +106,3 @@ void Program::draw(){
     drawUI();
 }
 
-void Program::drawUI(){
-
-    if (activeShape == nullptr) {
-        //DrawUIText("Select a shape tool to begin.", windowWidth * 0.35f, windowHeight * 0.5f, 20, GRAY); 
-    }else{
-        activeShape->drawUIProperties();
-    }
-
-    Scene::drawUI();//UI buttons
-}

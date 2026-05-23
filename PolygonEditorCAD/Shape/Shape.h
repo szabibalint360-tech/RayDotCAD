@@ -77,7 +77,6 @@ public:
     float calculateArea() const;
 
     // Intersection Math
-    float cross2D(Vector2 a, Vector2 b, Vector2 c) const;
     bool IsPointInTriangle(Vector2 p, Vector2 a, Vector2 b, Vector2 c) const;
     bool DoLinesIntersect(Vector2 a, Vector2 b, Vector2 c, Vector2 d) const;
 

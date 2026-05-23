@@ -1,9 +1,5 @@
 #include "Shape.h"
 
-float Shape::cross2D(Vector2 a, Vector2 b, Vector2 c) const {
-    return (b.x - a.x) * (c.y - b.y) - (b.y - a.y) * (c.x - b.x);
-}
-
 float Shape::calculatePerimeter() const {
     if (points.size() < 2) return 0.0f;
     float perimeter = 0.0f;

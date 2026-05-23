@@ -78,11 +78,39 @@ void Shape::update(double deltaTime) {
 void Shape::draw() {
     fillPolygon();
 
+    // DRAW EDGES & MEASUREMENTS
     for (size_t i = 0; i < points.size(); i++) {
-        DrawLineEx(points[i].getPos(),
-            points[(i + 1) % points.size()].getPos(),
-            lineThickness, lineColor);
+        Vector2 p1 = points[i].getPos();
+        Vector2 p2 = points[(i + 1) % points.size()].getPos();
+
+        // Draw the solid line
+        DrawLineEx(p1, p2, lineThickness, lineColor);
+
+        if (ENGINE::SHOW_LINE_LENGTH && points.size() > 1) {
+            float dist = Vector2Distance(p1, p2);
+
+            // Only draw if
+            if (dist > 0.1f) {
+                // Calculate the exact center of the edge
+                Vector2 midPoint = { (p1.x + p2.x) / 2.0f, (p1.y + p2.y) / 2.0f };
+
+                // Format the distance
+                char lengthText[32];
+                snprintf(lengthText, sizeof(lengthText), "%.1fmm", dist);
+
+                // CAD Aesthetics: Offset the text slightly
+                int fontSize = 10;
+                int textWidth = MeasureText(lengthText, fontSize);
+
+                // Draw a subtle background box so the text is readable over the grid
+                DrawRectangle((int)midPoint.x + 4, (int)midPoint.y - 12, textWidth + 10, fontSize + 4, ColorAlpha(WHITE, 0.8f));
+
+                // Draw the text
+                DrawUIText(lengthText, (int)midPoint.x + 6, (int)midPoint.y - 10, fontSize, DARKBLUE);
+            }
+        }
     }
+    // DRAW VERTEX POINTS 
     for (size_t i = 0; i < points.size(); i++) {
         points[i].draw();
     }

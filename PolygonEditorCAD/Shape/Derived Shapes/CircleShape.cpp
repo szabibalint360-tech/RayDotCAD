@@ -2,13 +2,13 @@
 
 
 // OVAL / CIRCLE SHAPE IMPLEMENTATION
-// ==========================================
+
 CircleShape::CircleShape(Camera2D* camera) : Shape(camera) {
     name = "Oval/Circle";
 }
 
 void CircleShape::activeInput() {
-    // 1. START DRAWING (Center Anchor)
+    // START DRAWING (Center Anchor)
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
         if (!CheckCollisionPointRec(GetMousePosition(), inputEditorRec)) return;
 
@@ -23,7 +23,7 @@ void CircleShape::activeInput() {
         points.assign(1, Point(centerPoint));
     }
 
-    // 2. DRAGGING & RESIZING
+    // DRAGGING & RESIZING
     if (isCreating && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         Vector2 currentMouse = GetMouseWorldPos();
 
@@ -44,7 +44,7 @@ void CircleShape::activeInput() {
         points[0].setPos(centerPoint); // Keep base tracker updated
     }
 
-    // 3. FINALIZE
+    // FINALIZE
     if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
         isCreating = false;
     }
@@ -57,8 +57,6 @@ void CircleShape::draw() {
     DrawEllipse((int)centerPoint.x, (int)centerPoint.y, radiusX, radiusY, getCurrentColor());
 
     // Draw the clean outer line thickness
-    // Note: Raylib doesn't support thickness on ellipses out of the box, 
-    // so we step through a simple 360-degree loop to render a clean line thickness.
     int segments = 60;
     for (int i = 0; i < segments; i++) {
         float angle1 = ((float)i / segments) * 2.0f * PI;
@@ -70,7 +68,48 @@ void CircleShape::draw() {
         DrawLineEx(p1, p2, lineThickness, lineColor);
     }
 
-    // Draw the center anchor point so the user can interact/see it
+    // Draw Radius Measurements
+    if (ENGINE::SHOW_LINE_LENGTH) {
+        int fontSize = 10;
+
+        // HORIZONTAL RADIUS 
+        Vector2 rightEdge = { centerPoint.x + radiusX, centerPoint.y };
+        Vector2 midX = { centerPoint.x + (radiusX / 2.0f), centerPoint.y };
+
+        DrawLineEx(centerPoint, rightEdge, 1.0f, ColorAlpha(DARKGRAY, 0.5f));
+
+        char textX[32];
+        // Check if circle or an ellipse
+        if (fabsf(radiusX - radiusY) < 0.1f) {
+            snprintf(textX, sizeof(textX), "R: %.1f mm", radiusX);
+        }
+        else {
+            snprintf(textX, sizeof(textX), "Rx: %.1f mm", radiusX);
+        }
+
+        int widthX = MeasureText(textX, fontSize);
+        // Center the text perfectly on the guide line
+        DrawRectangle((int)midX.x - (widthX / 2) - 2, (int)midX.y - 12, widthX + 4, fontSize + 4, ColorAlpha(WHITE, 0.8f));
+        DrawText(textX, (int)midX.x - (widthX / 2), (int)midX.y - 10, fontSize, DARKBLUE);
+
+        // VERTICAL RADIUS only drawn if Ellipse
+        if (fabsf(radiusX - radiusY) >= 0.1f) {
+            Vector2 bottomEdge = { centerPoint.x, centerPoint.y + radiusY };
+            Vector2 midY = { centerPoint.x, centerPoint.y + (radiusY / 2.0f) };
+
+            DrawLineEx(centerPoint, bottomEdge, 1.0f, ColorAlpha(DARKGRAY, 0.5f));
+
+            char textY[32];
+            snprintf(textY, sizeof(textY), "Ry: %.1f mm", radiusY);
+            int widthY = MeasureText(textY, fontSize);
+
+            // Offset text to the right of the vertical line
+            DrawRectangle((int)midY.x + 4, (int)midY.y - (fontSize / 2) - 2, widthY + 4, fontSize + 4, ColorAlpha(WHITE, 0.8f));
+            DrawText(textY, (int)midY.x + 6, (int)midY.y - (fontSize / 2), fontSize, DARKBLUE);
+        }
+    }
+
+    // Draw the center anchor point
     if (!points.empty()) points[0].draw();
 }
 bool CircleShape::containsPoint(Vector2 p) const {//using oval formula
@@ -86,7 +125,6 @@ bool CircleShape::containsPoint(Vector2 p) const {//using oval formula
 }
 
 float CircleShape::calculateArea() const {
-    // Ramanujan / Standard Area of an Ellipse: PI * A * B
     return PI * radiusX * radiusY;
 }
 
