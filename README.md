@@ -7,6 +7,7 @@
 **RayDotCAD** is a lightweight, highly structured 2D Computer-Aided Design (CAD) engine built from scratch in C++ using Raylib. 
 
 Designed with a custom **Godot-inspired Scene Graph architecture**, this project serves as both a functional geometry playground and a showcase of advanced C++ design patterns. It handles real-time spatial mathematics, dynamic UI layouts, and state-driven entity management without relying on heavy external GUI frameworks.
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/a157f8e0-51b8-47ac-ab3a-fbabd8c0223f" />
 
 ## ✨ Features
 
