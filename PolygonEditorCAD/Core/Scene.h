@@ -13,13 +13,12 @@ public:
         if (child == nullptr) return;
         child->parent_ = this;
 
-        // If it's a UI element, it goes to the dedicated UI layers
+        // dedicated UI layer
         if (Control* control = dynamic_cast<Control*>(child)) {
             ui_children.push_back(control);
             return;
         }
 
-        // World space elements (drawn relative to the camera)
         children_.push_back(child);
     }
 
@@ -40,21 +39,20 @@ public:
     }
 
     virtual void drawUI() {
-        // UI drawing layer is completely flat, untouched by Camera scaling
+        // UI layer independent of Camera scaling
         for (Control* ui_element : ui_children) {
             ui_element->draw();
         }
     }
 
     void draw() override {
-        // 1. Pass world components (like your Polygon line segments) inside the camera matrix
+
         if (camera != nullptr) camera->beginDraw();
 
         Node::draw();
 
         if (camera != nullptr) camera->endDraw();
 
-        // 2. Draw HUD panels and CAD options statically on top of the viewport
         drawUI();
     }
 

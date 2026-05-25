@@ -4,7 +4,7 @@
 class Node {
 public:
 	Node* parent_ = nullptr;
-	vector <Node*> children_;//VERY IMPORTANT NOTE: children_ is not a list of dynamic objects but of adresses
+	vector <Node*> children_;//VERY IMPORTANT NOTE: i changed how this works
 
 	string name = "Node";
 	bool collision = false;
@@ -15,6 +15,17 @@ public:
 
 	virtual void process(double deltaTime) {}//should be defined in a seperate class
 
+	virtual ~Node() {
+		// Safe backward traversal loop
+		for (int i = (int)children_.size() - 1; i >= 0; i--) {
+			if (children_[i] != nullptr) {
+				Node* child = children_[i];
+				children_[i] = nullptr;
+				delete child;
+			}
+		}
+		children_.clear();
+	}
 	void addChild(Node* child) {
 		if (child == nullptr) return;
 		child->parent_ = this;
